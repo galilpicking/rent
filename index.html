@@ -24,6 +24,7 @@
       body {
         overflow-x: hidden;
         direction: rtl;
+        position: relative;
       }
       body > iframe {
         display: none;
@@ -34,6 +35,21 @@
       }
       #sig-canvas {
         border: 1px solid black;
+      }
+      .thankyou-modal {
+        background-color: white;
+        height: 80vh;
+        width: 100%;
+        border: 1px solid black;
+        position: fixed;
+        z-index: 2;
+        top: 10%;
+        font-size: 3rem;
+        text-align: center;
+        /* display: flex; */
+        justify-content: center;
+        align-items: center;
+        display: none;
       }
     </style>
 
@@ -51,14 +67,14 @@
 
       function getHtml() {
         return `<!DOCTYPE html>
-              <html lang="en">
-              <head>
-                ${document.head.innerHTML}
-            </head>
-            <body>
-              ${document.body.innerHTML}
-        </body>
-        </html>`;
+                    <html lang="en">
+                    <head>
+                      ${document.head.innerHTML}
+                  </head>
+                  <body>
+                    ${document.body.innerHTML}
+              </body>
+              </html>`;
       }
 
       function updatePrice() {
@@ -71,7 +87,13 @@
         document.querySelector('.price-to-show').innerText = price;
       }
 
+      let counter = 0;
+
       function sendData() {
+        if (counter > 0) {
+          console.log('youve sended already');
+          return;
+        }
         console.log('sending data..');
         const signature = document.getElementById('sig-canvas');
         const full_name = document.getElementById('full_name').value;
@@ -120,10 +142,18 @@
         xhr2.setRequestHeader('Content-Type', 'application/json');
         xhr2.onload = function (e) {};
         xhr2.send(JSON.stringify(data));
+        document.querySelector('.thankyou-modal').style.display = 'flex';
+        counter++;
       }
     </script>
   </head>
   <body onload="updatePrice()">
+    <div class="thankyou-modal">
+      <span
+        >תודה שמילאתם את הטופס !<br />
+        עוד כמה רגעים קובץ pdf ישלח למייל שלכם - אנא צאו מהדף</span
+      >
+    </div>
     <section>
       <div class="container">
         <div class="row justify-content-center">
@@ -386,6 +416,19 @@
           y: 0,
         };
         var lastPos = mousePos;
+
+        canvas.addEventListener('touchstart', function (event) {
+          event.preventDefault();
+        });
+        canvas.addEventListener('touchmove', function (event) {
+          event.preventDefault();
+        });
+        canvas.addEventListener('touchend', function (event) {
+          event.preventDefault();
+        });
+        canvas.addEventListener('touchcancel', function (event) {
+          event.preventDefault();
+        });
 
         canvas.addEventListener(
           'mousedown',
