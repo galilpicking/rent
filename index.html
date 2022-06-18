@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>חוזה שכירות</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <!-- bringing the date -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      html,
+      body {
+        overflow-x: hidden;
+        direction: rtl;
+      }
+      body > iframe {
+        display: none;
+      }
+      .kbw-signature {
+        width: 350px;
+        height: 200px;
+      }
+      #sig-canvas {
+        border: 1px solid black;
+      }
+    </style>
+
+    <script>
+      $(document).ready(function () {
+        const date = new Date();
+        const d = date.getDate();
+        const m = date.getMonth() + 1;
+        const y = date.getFullYear();
+
+        $('#day').text(d);
+        $('#month').text(m);
+        $('#year').text(y);
+      });
+
+      function getHtml() {
+        return `<!DOCTYPE html>
+              <html lang="en">
+              <head>
+                ${document.head.innerHTML}
+            </head>
+            <body>
+              ${document.body.innerHTML}
+        </body>
+        </html>`;
+      }
+
+      function updatePrice() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        let price = urlParams.get('price');
+        console.log(price);
+        if (!price) price = 725;
+
+        document.querySelector('.price-to-show').innerText = price;
+      }
+
+      function sendData() {
+        console.log('sending data..');
+        const signature = document.getElementById('sig-canvas');
+        const full_name = document.getElementById('full_name').value;
+        const email = document.getElementById('email').value;
+        const id = document.getElementById('id').value;
+        const address = document.getElementById('address').value;
+        const place = document.getElementById('place').value;
+
+        if (
+          place == '' ||
+          full_name == '' ||
+          id == '' ||
+          address == '' ||
+          email == ''
+        ) {
+          alert(' יש למלא את כל השדות');
+          return;
+        }
+        let res = confirm('האם חתמת בתחתית העמוד?');
+        if (!res) return;
+
+        const elCanvas = document.getElementById('sig-canvas');
+        const sigContainer = document.getElementById('defaultSignature');
+        const dataUrl = elCanvas.toDataURL();
+        console.log(dataUrl);
+        sigContainer.innerHTML = `<img src="${dataUrl}" alt="">`;
+
+        const data = {
+          html: getHtml(),
+          name: full_name,
+          email: email,
+          sig: signature,
+          id: id,
+          address: address,
+          place: place,
+          fileName: 'rent',
+        };
+
+        console.log(data);
+        var xhr2 = new XMLHttpRequest();
+        xhr2.open(
+          'POST',
+          'https://hook.eu1.make.com/h5411aqgmhauvf0u4uap4nvewjn7f59x',
+          true
+        );
+        xhr2.setRequestHeader('Content-Type', 'application/json');
+        xhr2.onload = function (e) {};
+        xhr2.send(JSON.stringify(data));
+      }
+    </script>
+  </head>
+  <body onload="updatePrice()">
+    <section>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col text-right">
+            <div class="row">
+              <div class="col text-center">
+                <h2>הסכם שכירות בלתי מוגנת (סטנדרטי)</h2>
+                <br />
+
+                <div class="row align-items-center p-2">
+                  <label class="text-right p-2" for="place">שנערך ב:</label>
+                  <input
+                    id="place"
+                    onchange="onChange(this)"
+                    name="place"
+                    type="text"
+                    class="col-4 form-control text-center p-2"
+                    placeholder="עד 20 תווים"
+                    maxlength="20"
+                    value="שדה אליעזר"
+                  />
+                </div>
+
+                <div class="row align-items-center text-center p-2">
+                  <div class="col-1 p-1">ביום</div>
+                  <div id="day" class="strong col-2"></div>
+                  <div class="col-1 p-1">בחודש</div>
+                  <div id="month" class="strong col-2"></div>
+                  <div class="col-1 p-1">שנת</div>
+                  <div id="year" class="strong col-2"></div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <p class="text-right">
+              בין שחר מרום (ת.ז 201377850 , נאות מרדכי) או בא כוחו (להלן
+              "המעסיק") מצד אחד לבין:
+            </p>
+
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="row form-group align-items-center p-1">
+                  <label class="text-right p-2" for="name">שם מלא:</label>
+                  <input
+                    id="full_name"
+                    onchange="onChange(this)"
+                    name="name"
+                    type="text"
+                    class="col form-control text-center p-2"
+                    placeholder="עד 20 תווים"
+                    maxlength="20"
+                  />
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="row form-group align-items-center p-1">
+                  <label class="text-right p-2" for="id">ת.ז:</label>
+                  <input
+                    id="id"
+                    onchange="onChange(this)"
+                    name="id"
+                    type="number"
+                    class="col form-control text-center p-2"
+                    placeholder="9 ספרות כולל ספרת ביקורת"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <div class="row form-group align-items-center p-1">
+                  <label class="text-right p-2" for="address">מען:</label>
+                  <input
+                    id="address"
+                    onchange="onChange(this)"
+                    name="address"
+                    type="text"
+                    class="col form-control text-center p-2"
+                    placeholder="עד 30 תווים"
+                    maxlength="30"
+                  />
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="row form-group align-items-center p-1">
+                  <label class="text-right p-2" for="email"
+                    >דואר אלקטרוני:</label
+                  >
+                  <input
+                    id="email"
+                    onchange="onChange(this)"
+                    name="email"
+                    type="email"
+                    class="col form-control text-center p-2"
+                    maxlength="30"
+                    placeholder="עד 30 תווים"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <p class="text-right">
+              העובד השוכר דירה דרך שחר מרום (להלן "השוכר") מצד שני.
+            </p>
+
+            <p class="text-right">
+              הואיל והמעסיק מארגן דיור לעובדים ע"י שכירת דירות מבעלי בתים בשדה
+              אליעזר והואיל והשוכר מעוניין במגורים באחת מדירות אלה לצורך עבודתו
+              אצל המעסיק.
+            </p>
+
+            <p class="text-right">
+              <strong>למען הסר ספק</strong>
+              יובהר כי ככל שהעובד ישכור שירותי מגורים מאת המשכירים בשדה אליעזר
+              יפעל המעסיק כמתווך ללא שכר, לצורך איסוף סכום השכירות עבור
+              המשכירים. אין למעסיק שום אחריות ביחס לנזקים ו/או הוצאות העלולות
+              להיגרם למשכיר עקב מעשי השוכר במקום המגורים. במסגרת השכרת דירות
+              מוטלת על השוכר אחריות מלאה על שלמות הציוד בחדרים ושמירה על תקינותם
+              הנוכחית. למען הסר ספק חובת התשלום עבור דמי השכירות היא על השוכר.
+              גביית התשלום באמצעות ניכוי משכר העבודה, רק לנוחות העובד השוכר
+              ובהסכמתו. לצורך העניין חתימתו של העובד השוכר על חוזה שכירות זה
+              מהווה הסכמתו לתנאי המגורים ואופן תשלום שכר הדירה.
+              <br />
+              המעביד ינכה את סכום שכר הדירה ממשכורת העובד בהתאם לתקופת מגוריו
+              ולפי צריכת החשמל, בהתאם לסכומי שכירות ידועים מראש. לפני כניסת
+              השוכר למגורים, יוודא השוכר את סכום שכר הדירה שעליו לשלם וכי הדבר
+              מקובל עליו.
+            </p>
+
+            <p class="font-weight-bold text-right">
+              לפיכך הוסכם והותנה בין הצדדים כדלהלן:
+            </p>
+
+            <div class="text-right">
+              <p>1. המבוא להסכם זה מהווה חלק בלתי נפרד ממנו ותנאי מתנאיו.</p>
+              <p>
+                2. העובד השוכר מצהיר כי ידוע לו שהשכירות לפי הסכם זה איננה מוגנת
+                לפי חוק הגנת הדייר תשל"ב – 1072 והינה שכירות בלתי מוגנת מפאת
+                הסיבות הנקובות בהסכם זה.
+              </p>
+              <p>
+                3. תקופת השכירות – מרגע כניסת השוכר לדירה ועד סוף החודש הקלנדרי
+                לעזיבתו, כלומר במקרה ועובד השוכר עזב לפני סוף חודש השכירות הוא
+                ישלם שכר דירה חודשי מלא. במידה ועזב העובד את הדירה בסוף חודש בלא
+                הודעה בזמן סביר מראש (לפחות שבועיים מראש) יחוייב העובד בקנס דמי
+                שכירות של שבועיים.
+              </p>
+              <p>
+                4. עבור התקופה הקצובה ישלם השוכר למשכיר דמי שכירות חודשיים בסכום
+                של <span class="price-to-show"></span> ש"ח בעבור כל חודש שכירות
+                אשר ישולמו באמצעות ניכוי משכר העובד. על החשמל והאינטרנט – בהתאם
+                לצריכה החודשית ולכמות האנשים בדירה. המעסיק יידע כל עובד בסכום
+                המלא שנוכה משכרו.
+              </p>
+              <p>
+                5. העובד השוכר מצהיר כי קיבל את הדירה מתאימה למגורים. העובד
+                השוכר מתחייב בזאת להחזיר את הדירה כמו שקיבל אותה. העובד השוכר
+                מתחייב לתקן על חשבונו כל ליקוי שיש בדירה שהוא גרם לה(למעט בלאי
+                סביר). במידה וקיים לקוי בדירה שמקורו בדירה עצמה, על השוכר לפנות
+                למעסיק שיסדיר את העניין אל מול המשכיר(קיבוץ מחניים).
+              </p>
+              <p>
+                6. בכדי להבטיח את מילוי סעיף 5 יופקד ע"י השוכר בידי המעסיק
+                צ'ק/מזומן על סך 500 ₪ אשר יושבו בעת עזיבת הדירה.
+              </p>
+              <p>
+                7. עובד אשר סיים לעבוד עם המעסיק יוכל להישאר בדירה באישור מיוחד
+                של המעסיק ובתשלום מראש על חודש מלא.
+              </p>
+              <p>
+                8. העובד השוכר מתחייב שלא לעשות כל שינוי בדירה או בסביבתה בין
+                בתוך הדירה ובין מחוצה לה ובכל הקשור אליה או מחובר אליה וכן לא
+                להוציא ולהעביר שום דבר מהחפצים ללא השכמת המשכיר בכתב.
+              </p>
+              <p>
+                9. באחריות השוכר לשמור על כל קבלות התשלום בגין כל הוצאה ביחס
+                לדירה ובכלל זה קבלות בגין תשלומים שוטפים.
+              </p>
+              <p>
+                10. העובד השוכר מצהיר כי ראה ובדק את הדירה ומצא אותה במצב טוב
+                ותקין ומתאים לדרישותיו, השוכר מוותר על כל טענת אי התאמה או טענה
+                בגין הדירה או בגין פגם ו/או מום גלוי או נסתר.
+              </p>
+              <p>
+                11. העובד השוכר מתחייב לשמור על ניקיון הדירה וסביבותיה, על השקט
+                ועל יחסי שכנות טובה.
+              </p>
+              <p>
+                12. העובד השוכר מתחייב לאפשר למשכיר או לבא כוחו להכנס לדירה בכל
+                זמן סביר וככל האפשר לאחר תיאום מראש למטרת ביצוע תיקונים ו/או
+                להצגת הדירה בפני אחר.
+              </p>
+            </div>
+
+            <p class="text-right">
+              מבלי לפגוע בשאר הוראות הסכם זה וכדי להסיר ספקות העובד השוכר משחרר
+              את המעסיק מכל אחריות מכל סוג שהיא לאובדן ו/או לנזקים מכל סוג שהם
+              העלולים להיגרם ע"י העובד השוכר והנמצאים בין בתוך הדירה ובין מחוצה
+              לה.
+              <br />
+            </p>
+
+            <div class="font-weight-bold text-right">
+              ולראיה באו הצדדים על החתום,
+            </div>
+            <br />
+            <div class="form-group align-items-center">
+              <label class="col text-right p-2">חתימת העובד:</label>
+              <div id="defaultSignature">
+                <canvas id="sig-canvas" width="620" height="160"> </canvas>
+              </div>
+
+              <div class="col">
+                <button id="sig-clearBtn" class="btn btn-primary mt-4">
+                  נקה חתימה
+                </button>
+                <button
+                  onClick="sendData()"
+                  id="svg"
+                  class="btn btn-primary mt-4"
+                >
+                  שלח טופס
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <br />
+
+    <script>
+      function onChange(el) {
+        el.setAttribute('value', el.value);
+      }
+
+      (function () {
+        window.requestAnimFrame = (function (callback) {
+          return (
+            window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimaitonFrame ||
+            function (callback) {
+              window.setTimeout(callback, 1000 / 60);
+            }
+          );
+        })();
+
+        var canvas = document.getElementById('sig-canvas');
+        var ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#222222';
+        ctx.lineWidth = 4;
+
+        var drawing = false;
+        var mousePos = {
+          x: 0,
+          y: 0,
+        };
+        var lastPos = mousePos;
+
+        canvas.addEventListener(
+          'mousedown',
+          function (e) {
+            drawing = true;
+            lastPos = getMousePos(canvas, e);
+          },
+          false
+        );
+
+        canvas.addEventListener(
+          'mouseup',
+          function (e) {
+            drawing = false;
+          },
+          false
+        );
+
+        canvas.addEventListener(
+          'mousemove',
+          function (e) {
+            mousePos = getMousePos(canvas, e);
+          },
+          false
+        );
+
+        canvas.addEventListener('touchstart', function (e) {}, false);
+
+        canvas.addEventListener(
+          'touchmove',
+          function (e) {
+            var touch = e.touches[0];
+            var me = new MouseEvent('mousemove', {
+              clientX: touch.clientX,
+              clientY: touch.clientY,
+            });
+            canvas.dispatchEvent(me);
+          },
+          false
+        );
+
+        canvas.addEventListener(
+          'touchstart',
+          function (e) {
+            mousePos = getTouchPos(canvas, e);
+            var touch = e.touches[0];
+            var me = new MouseEvent('mousedown', {
+              clientX: touch.clientX,
+              clientY: touch.clientY,
+            });
+            canvas.dispatchEvent(me);
+          },
+          false
+        );
+
+        canvas.addEventListener(
+          'touchend',
+          function (e) {
+            var me = new MouseEvent('mouseup', {});
+            canvas.dispatchEvent(me);
+          },
+          false
+        );
+
+        function getMousePos(canvasDom, mouseEvent) {
+          var rect = canvasDom.getBoundingClientRect();
+          return {
+            x: mouseEvent.clientX - rect.left,
+            y: mouseEvent.clientY - rect.top,
+          };
+        }
+
+        function getTouchPos(canvasDom, touchEvent) {
+          var rect = canvasDom.getBoundingClientRect();
+          return {
+            x: touchEvent.touches[0].clientX - rect.left,
+            y: touchEvent.touches[0].clientY - rect.top,
+          };
+        }
+
+        function renderCanvas() {
+          if (drawing) {
+            ctx.moveTo(lastPos.x, lastPos.y);
+            ctx.lineTo(mousePos.x, mousePos.y);
+            ctx.stroke();
+            lastPos = mousePos;
+          }
+        }
+
+        // Prevent scrolling when touching the canvas
+        document.body.addEventListener(
+          'touchstart',
+          function (e) {
+            if (e.target == canvas) {
+              e.preventDefault();
+            }
+          },
+          false
+        );
+        document.body.addEventListener(
+          'touchend',
+          function (e) {
+            if (e.target == canvas) {
+              e.preventDefault();
+            }
+          },
+          false
+        );
+        document.body.addEventListener(
+          'touchmove',
+          function (e) {
+            if (e.target == canvas) {
+              e.preventDefault();
+            }
+          },
+          false
+        );
+
+        (function drawLoop() {
+          requestAnimFrame(drawLoop);
+          renderCanvas();
+        })();
+
+        function clearCanvas() {
+          canvas.width = canvas.width;
+        }
+
+        // Set up the UI
+        var sigText = document.getElementById('sig-dataUrl');
+        var sigImage = document.getElementById('sig-image');
+        var clearBtn = document.getElementById('sig-clearBtn');
+
+        clearBtn.addEventListener(
+          'click',
+          function (e) {
+            clearCanvas();
+            sigText.innerHTML = 'Data URL for your signature will go here!';
+            sigImage.setAttribute('src', '');
+          },
+          false
+        );
+      })();
+    </script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
